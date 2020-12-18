@@ -62,10 +62,13 @@ t_duo obtenerDuo(int puntaje);
 void obtenerPersonaje(int puntos, int altura);
 bool estaElElemento(const char vector[], char elemento, int tamanho);
 
+/* pre: recibe un vector de chars*/
+/*post: imprime el vector como cadena por pantalla*/
 void imprimir(char mensaje[]){
 printf("%s",mensaje);
 }
-
+/*pre: recibe una referencia a un entero*/
+ /*post: pide por consola un numero entre 1988 y 2008 y actualiza el valor del entero referenciado*/ 
 void pedirAnhoNacimiento(int *anho){
     char mensaje[] = "Ingrese su anho de nacimiento (Entre 1988 y 2008) \n --->: ";
     while( *anho > ANHO_MAX || *anho< ANHO_MIN){
@@ -73,6 +76,8 @@ void pedirAnhoNacimiento(int *anho){
         scanf(" %d", anho);
     }
 }
+/* pre: recibe una referencia a un caracter*/
+/* post: pide por consola que ingrese S, D o A y actualiza el valor del caracter referenciado*/
 
 void pedirSabor( char *sabor){
 
@@ -83,6 +88,10 @@ void pedirSabor( char *sabor){
         *sabor = toupper(*sabor);
     }
 }
+
+/* pre: recibe una referencia a un entero*/
+/* post: pide por consolta que ingrese un numero entre 37 y 47 o que ingrese 0. 
+Actualiza el entero referenciado con este valor*/
 void pedirTalle(int *talle){
     char mensaje[] = "Ingrese talle  \n Si usa zapatos ingrese un numero entre 37 y 47 \n Si no usa zapatos ingrese 0 \n --->: ";
     while((*talle != SIN_ZAPATOS) && (*talle > TALLE_MAX || *talle < TALLE_MIN)){
@@ -90,7 +99,8 @@ void pedirTalle(int *talle){
         scanf("%d", talle);
     }
 }
-
+/*pre: recibe una referencia a caracter*/
+/* post: pide por consola que ingrese A,Y,B,N,R o V. Actualiza el caracter referenciado con el nuevo valor*/
 void pedirColor(char *color){
     char mensaje1[] = "Ingrese color \n";
     char opciones[] = "R para rosa \n V para verde \n A para azul \n Y para amarillo \n B para blanco \n N para negro \n";
@@ -103,6 +113,8 @@ void pedirColor(char *color){
         *color = toupper(*color);
     }
 }
+/*pre: recibe una referencia a entero*/
+/*post: pide por consola un numero entre 1 y 240. Actualiza el entero referenciado con el nuevo valor*/
 void pedirAltura(int *altura){
     char mensaje[] = "Ingrese altura (entre 1 y 240) \n --->";
     while( *altura < ALTURA_MIN || *altura > ALTURA_MAX){
@@ -110,6 +122,9 @@ void pedirAltura(int *altura){
         scanf("%d", altura);
     }
 }
+
+/*pre: recibe una referencia a entero puntate y un caracter color*/
+/*post: actualiza el valor de puntaje dependiendo del caracter color*/
 void calcularPuntajePorColor(int *puntaje, char color){
     int puntajajePorColor = 0;
     if(color == AMARILLO || color == ROSA){
@@ -123,7 +138,8 @@ void calcularPuntajePorColor(int *puntaje, char color){
     }
     *puntaje += puntajajePorColor;
 }
-
+/* pre: recibe una referencia a un entero puntaje y un caracter sabor*/
+/*post: actualiza el valor de puntaje dependiendo del caracter sabor*/
 void calcularPuntajePorSabor(int *puntaje, char sabor){
     int puntajePorSabor = 0;
     if(sabor == SALADO){
@@ -137,10 +153,14 @@ void calcularPuntajePorSabor(int *puntaje, char sabor){
     }
     *puntaje += puntajePorSabor;
 }
+/*pre: recibe una referencia a entero puntaje y un entero anho entre 1998 y 20008*/
+/*post: actualiza el valor de puntaje dependiendo del valor del entero anho*/
 void calcularPuntajePorAnho( int *puntaje, int anho){
     int puntajePorAnho = anho%20 +1;
     *puntaje += puntajePorAnho;
 }
+/*pre: recibe un entero entre 37 y 47 o 0*/
+/*post: devuelve el multiplicador dependiendo el valor del talle*/
 int calcularMultiplicador(int talle){
     int multiplicador = 3;
     if (33 <= talle && talle <=37)
@@ -159,6 +179,9 @@ int calcularMultiplicador(int talle){
     
     return multiplicador;
 }
+/*pre: recibe una referencia entero puntaje, caracter color, caracter sabor, entero altura, entero talle
+entero anho*/
+/*post: actualiza el valor de puntaje dependiendo de los otros parametros*/
 void calcularPuntaje(int *puntaje, int talle, int altura, int anho, char color, char sabor){
     int multiplicador = 0;
     multiplicador = calcularMultiplicador(talle);
@@ -185,6 +208,9 @@ t_duo obtenerDuo(int puntaje){
     }
     return resultado;
 }
+/* pre: recibe un entero puntaje y un entero altura*/
+/*post: imprime el personaje seleccionado dependiendo del puntaje obtenido y de la menor diferencia entre
+la altura de los personajes y la altura ingresada*/
 void obtenerPersonaje(int puntaje, int altura){
     t_duo resultado = obtenerDuo(puntaje);
     char mensaje[] = "Con un total de ";
@@ -199,6 +225,8 @@ void obtenerPersonaje(int puntaje, int altura){
         printf("%s\n", resultado.personaje2);
     }
 }
+/* pre: recibe un vector de caracteres y un caracter elemento */
+/* post: devuelve true si el elemento esta en el vector, false si no*/
     bool estaElElemento(const char vector[], char elemento, int tamanho){
  
     int i = 0;
