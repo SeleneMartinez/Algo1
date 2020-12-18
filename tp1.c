@@ -187,13 +187,16 @@ t_duo obtenerDuo(int puntaje){
 }
 void obtenerPersonaje(int puntaje, int altura){
     t_duo resultado = obtenerDuo(puntaje);
-    char mensaje[] = "Tu personaje es: ";
+    char mensaje[] = "Con un total de ";
+    char mensaje1[] = " puntos tu personaje es: ";
     imprimir(mensaje);
+    printf("%d", puntaje);
+    imprimir(mensaje1);
     if( abs(altura - resultado.altura1)< (abs ( altura - resultado.altura2))){
-        printf("%s", resultado.personaje1);
+        printf("%s \n", resultado.personaje1);
     }
     else{
-        printf("%s", resultado.personaje2);
+        printf("%s\n", resultado.personaje2);
     }
 }
     bool estaElElemento(const char vector[], char elemento, int tamanho){
@@ -230,7 +233,6 @@ int main(){
 
     
     calcularPuntaje(&puntaje, talle,altura,anho,color,sabor);
-    printf("%d", puntaje);
     obtenerPersonaje(puntaje, altura);
 
     return 0;
