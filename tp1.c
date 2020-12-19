@@ -9,6 +9,16 @@
 #define HUESO "Puro Hueso"
 #define CORAJE "Coraje"
 
+#define VERDE  'V'
+#define ROSA  'R'
+#define NEGRO  'N'
+#define AMARILLO  'Y'
+#define AZUL  'A'
+#define BLANCO  'B'
+#define SALADO  'S'
+#define DULCE  'D'
+#define AMARGO  'A'
+
 const int ALTURA_JHONNY = 180;
 const int ALTURA_BELLOTA = 120;
 const int ALTURA_POLLITO = 50;
@@ -16,27 +26,33 @@ const int ALTURA_BLUE = 140;
 const int ALTURA_HUESO = 200;
 const int ALTURA_CORAJE = 30;
 
-const char VERDE = 'V';
-const char ROSA = 'R';
-const char NEGRO = 'N';
-const char AMARILLO = 'Y';
-const char AZUL = 'A';
-const char BLANCO = 'B';
-const char SALADO = 'S';
-const char DULCE = 'D';
-const char AMARGO = 'A';
+
 
 const char COLORES[] = {NEGRO, BLANCO,AMARILLO,ROSA,AZUL,VERDE};
 const char SABORES[] = {SALADO,DULCE,AMARGO};
 const int TALLES[] = {0,37,38,39,40,41,42,43,44,45,46,47};
 
+const int SIN_ZAPATILLAS = 0, MIN_TALLE1 = 33, MAX_TALLE1 = 37;
+const int MIN_TALLE2 = 38, MAX_TALLE2 = 42, MIN_TALLE3 = 43, MAX_TALLE3 = 47;
 const int CANTIDAD_SABORES = 3;
 const int CANTIDAD_COLORES = 6;
 const int CANTIDAD_TALLES = 12;
 
-const int ANHO_MAX = 2008, ANHO_MIN = 1988;
+const int PUNTO_ADICIONAL_ANIO = 1;
+const int DIVISOR_ANIO = 20;
+
+const int MULTIPLICADOR1 = 1, MULTIPLICADOR2 = 2, MULTIPLICADOR3 =3, MULTIPLICADOR4 =4;
+
+const int ANIO_MAX = 2008, ANIO_MIN = 1988;
 const int TALLE_MAX = 47, TALLE_MIN = 37, SIN_ZAPATOS = 0;
 const int ALTURA_MAX =240, ALTURA_MIN =1;
+const int MAX_ASCII = 126, MIN_ASCII =20;
+
+const int PUNTOS_ROSA = 5, PUNTOS_AMARILLO = 5, PUNTOS_BLANCO = 15, PUNTOS_NEGRO = 15;
+const int PUNTOS_AZUL = 20, PUNTOS_VERDE = 20;
+const int PUNTOS_SALADO =5, PUNTOS_DULCE = 15, PUNTOS_AMARGO = 20;
+
+
 
 typedef struct duo{
     char personaje1[12];
@@ -48,19 +64,19 @@ typedef struct duo{
 
 
 void imprimir(char mensaje[]);
-void pedirAnhoNacimiento(int *anho);
+void pedirAnioNacimiento(int *anio);
 void pedirSabor(char *sabor);
 void pedirTalle(int *talle);
 void pedirColor(char *color);
 void pedirAltura(int *altura);
 void calcularPuntajePorColor(int *puntaje, char color);
 void calcularPuntajePorSabor(int *puntaje, char sabor);
-void calcularPuntajePorAnho( int *puntaje, int anho);
+void calcularPuntajePorAnio( int *puntaje, int anio);
 int calcularMultiplicador(int talle);
-void calcularPuntaje(int *puntaje, int talle, int altura, int anho, char color, char sabor);
+void calcularPuntaje(int *puntaje, int talle, int altura, int anio, char color, char sabor);
 t_duo obtenerDuo(int puntaje);
 void obtenerPersonaje(int puntos, int altura);
-bool estaElElemento(const char vector[], char elemento, int tamanho);
+bool estaElElemento(const char vector[], char elemento, int tamanio);
 
 /* pre: recibe un vector de chars*/
 /*post: imprime el vector como cadena por pantalla*/
@@ -69,11 +85,12 @@ printf("%s",mensaje);
 }
 /*pre: recibe una referencia a un entero*/
  /*post: pide por consola un numero entre 1988 y 2008 y actualiza el valor del entero referenciado*/ 
-void pedirAnhoNacimiento(int *anho){
-    char mensaje[] = "Ingrese su anho de nacimiento (Entre 1988 y 2008) \n --->: ";
-    while( *anho > ANHO_MAX || *anho< ANHO_MIN){
-        imprimir(mensaje);
-        scanf(" %d", anho);
+void pedirAnioNacimiento(int *anio){
+
+    while( *anio > ANIO_MAX || *anio< ANIO_MIN){
+        printf("Ingrese su anio de nacimiento (Entre %d y %d) \n --->: ", ANIO_MIN, ANIO_MAX);
+        scanf(" %d", anio);
+        (int) (*anio);
     }
 }
 /* pre: recibe una referencia a un caracter*/
@@ -81,11 +98,10 @@ void pedirAnhoNacimiento(int *anho){
 
 void pedirSabor( char *sabor){
 
-    char mensaje1[] = "Elija un sabor \n S -> salado \n M -> amargo \n D -> dulce \n --->: ";
-    while(estaElElemento(SABORES, *sabor, CANTIDAD_SABORES) == false){
-        imprimir(mensaje1);
+    while(!estaElElemento(SABORES, *sabor, CANTIDAD_SABORES)){
+        printf("Elija un sabor \n %c -> salado \n %c -> amargo \n %c -> dulce \n --->: ", SALADO, AMARGO, DULCE);
         scanf(" %c", sabor);
-        *sabor = toupper(*sabor);
+    
     }
 }
 
@@ -93,101 +109,121 @@ void pedirSabor( char *sabor){
 /* post: pide por consolta que ingrese un numero entre 37 y 47 o que ingrese 0. 
 Actualiza el entero referenciado con este valor*/
 void pedirTalle(int *talle){
-    char mensaje[] = "Ingrese talle  \n Si usa zapatos ingrese un numero entre 37 y 47 \n Si no usa zapatos ingrese 0 \n --->: ";
+    
     while((*talle != SIN_ZAPATOS) && (*talle > TALLE_MAX || *talle < TALLE_MIN)){
-        imprimir(mensaje);
+        printf("Ingrese talle  \n Si usa zapatos ingrese un numero entre %d y %d \n Si no usa zapatos ingrese %d \n --->: ", TALLE_MIN, TALLE_MAX,SIN_ZAPATILLAS);
         scanf("%d", talle);
+   
     }
 }
 /*pre: recibe una referencia a caracter*/
 /* post: pide por consola que ingrese A,Y,B,N,R o V. Actualiza el caracter referenciado con el nuevo valor*/
 void pedirColor(char *color){
-    char mensaje1[] = "Ingrese color \n";
-    char opciones[] = "R para rosa \n V para verde \n A para azul \n Y para amarillo \n B para blanco \n N para negro \n";
-    char mensajefinal[] = "--->: ";
-    while( estaElElemento(COLORES, *color, CANTIDAD_COLORES) == false){
-        imprimir(mensaje1);
-        imprimir(opciones);
-        imprimir(mensajefinal);
+    while( !estaElElemento(COLORES, *color, CANTIDAD_COLORES)){
+        printf("Ingrese color:\n");
+        printf(" %c para rosa \n %c para verde \n %c para azul \n", ROSA,VERDE,AZUL);
+        printf(" %c para amarillo \n %c para blanco \n %c para negro \n", AMARILLO, BLANCO,NEGRO);
+        printf("--->");
         scanf(" %c", color);
-        *color = toupper(*color);
     }
 }
 /*pre: recibe una referencia a entero*/
 /*post: pide por consola un numero entre 1 y 240. Actualiza el entero referenciado con el nuevo valor*/
 void pedirAltura(int *altura){
+    char line[256];
+    int numero;
     char mensaje[] = "Ingrese altura (entre 1 y 240) \n --->";
     while( *altura < ALTURA_MIN || *altura > ALTURA_MAX){
         imprimir(mensaje);
-        scanf("%d", altura);
+        fgets(line,sizeof line,stdin);
+        *altura = sscanf(line, "%d", &numero);
+        if(*altura){
+            break;
+        }
     }
 }
 
 /*pre: recibe una referencia a entero puntate y un caracter color*/
 /*post: actualiza el valor de puntaje dependiendo del caracter color*/
 void calcularPuntajePorColor(int *puntaje, char color){
-    int puntajajePorColor = 0;
-    if(color == AMARILLO || color == ROSA){
-        puntajajePorColor = 5;
+    int puntajePorColor = 0;
+    switch(color){
+        case ROSA:
+            puntajePorColor = PUNTOS_ROSA;
+            break;
+        case AMARILLO:
+            puntajePorColor = PUNTOS_AMARILLO;
+            break;
+        case BLANCO:
+            puntajePorColor = PUNTOS_BLANCO;
+            break;
+        case NEGRO:
+            puntajePorColor = PUNTOS_NEGRO;
+            break;
+        case VERDE:
+            puntajePorColor = PUNTOS_VERDE;
+            break;
+        case AZUL:
+            puntajePorColor = PUNTOS_AZUL;
+            break;
+    
     }
-    else if(color == NEGRO || color == BLANCO){
-        puntajajePorColor = 15;
-    }
-    else{
-        puntajajePorColor = 20;
-    }
-    *puntaje += puntajajePorColor;
+    *puntaje += puntajePorColor;
 }
 /* pre: recibe una referencia a un entero puntaje y un caracter sabor*/
 /*post: actualiza el valor de puntaje dependiendo del caracter sabor*/
 void calcularPuntajePorSabor(int *puntaje, char sabor){
     int puntajePorSabor = 0;
-    if(sabor == SALADO){
-        puntajePorSabor = 5;
-    }
-    else if(sabor == DULCE){
-        puntajePorSabor = 15;
-    }
-    else{
-        puntajePorSabor =20;
+
+    switch(sabor){
+        case SALADO:
+            puntajePorSabor = PUNTOS_SALADO;
+            break;
+        case DULCE:
+            puntajePorSabor = PUNTOS_DULCE;
+            break;
+        case AMARGO:
+            puntajePorSabor = PUNTOS_AMARGO;
+            break;
     }
     *puntaje += puntajePorSabor;
+
 }
-/*pre: recibe una referencia a entero puntaje y un entero anho entre 1998 y 20008*/
-/*post: actualiza el valor de puntaje dependiendo del valor del entero anho*/
-void calcularPuntajePorAnho( int *puntaje, int anho){
-    int puntajePorAnho = anho%20 +1;
-    *puntaje += puntajePorAnho;
+/*pre: recibe una referencia a entero puntaje y un entero anio entre 1998 y 20008*/
+/*post: actualiza el valor de puntaje dependiendo del valor del entero anio*/
+void calcularPuntajePorAnio( int *puntaje, int anio){
+    int puntajePorAnio = anio% DIVISOR_ANIO +PUNTO_ADICIONAL_ANIO;
+    *puntaje += puntajePorAnio;
 }
 /*pre: recibe un entero entre 37 y 47 o 0*/
 /*post: devuelve el multiplicador dependiendo el valor del talle*/
 int calcularMultiplicador(int talle){
-    int multiplicador = 3;
-    if (33 <= talle && talle <=37)
+    int multiplicador = 0;
+    if (MIN_TALLE1 <= talle && talle <=MAX_TALLE1)
     {
-        multiplicador = 2;
+        multiplicador = MULTIPLICADOR2;
     }
-    else if(38 <= talle && talle<= 42){
-        multiplicador = 3;
+    else if(MIN_TALLE2 <= talle && talle<= MAX_TALLE2){
+        multiplicador = MULTIPLICADOR3;
     }
-    else if( 43 <= talle && talle <= 47){
-        multiplicador = 4;
+    else if( MIN_TALLE3 <= talle && talle <= MAX_TALLE3){
+        multiplicador = MULTIPLICADOR4;
     }
     else{
-        multiplicador = 1;
+        multiplicador = MULTIPLICADOR1;
     }
     
     return multiplicador;
 }
 /*pre: recibe una referencia entero puntaje, caracter color, caracter sabor, entero altura, entero talle
-entero anho*/
+entero anio*/
 /*post: actualiza el valor de puntaje dependiendo de los otros parametros*/
-void calcularPuntaje(int *puntaje, int talle, int altura, int anho, char color, char sabor){
+void calcularPuntaje(int *puntaje, int talle, int altura, int anio, char color, char sabor){
     int multiplicador = 0;
     multiplicador = calcularMultiplicador(talle);
     
     calcularPuntajePorColor(puntaje, color);
-    calcularPuntajePorAnho(puntaje, anho);
+    calcularPuntajePorAnio(puntaje, anio);
     calcularPuntajePorSabor(puntaje, sabor);
     *puntaje = *puntaje * multiplicador;
 }
@@ -227,12 +263,12 @@ void obtenerPersonaje(int puntaje, int altura){
 }
 /* pre: recibe un vector de caracteres y un caracter elemento */
 /* post: devuelve true si el elemento esta en el vector, false si no*/
-    bool estaElElemento(const char vector[], char elemento, int tamanho){
+    bool estaElElemento(const char vector[], char elemento, int tamanio){
  
     int i = 0;
     bool esta = false;
 
-    while (esta == false && i<tamanho){
+    while (esta == false && i<tamanio){
         if(vector[i] == elemento){
             esta = true;
         }
@@ -245,7 +281,7 @@ int main(){
     
 
     int puntaje = 0;
-    int anho = 0;
+    int anio = 0;
     int altura = 0;
     int talle = 1;
     char sabor, color;
@@ -256,11 +292,11 @@ int main(){
     pedirAltura(&altura);
     pedirTalle(&talle);    
     pedirSabor(&sabor);
-    pedirAnhoNacimiento(&anho);
+    pedirAnioNacimiento(&anio);
     pedirColor(&color);
 
     
-    calcularPuntaje(&puntaje, talle,altura,anho,color,sabor);
+    calcularPuntaje(&puntaje, talle,altura,anio,color,sabor);
     obtenerPersonaje(puntaje, altura);
 
     return 0;
